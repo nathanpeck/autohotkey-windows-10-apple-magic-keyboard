@@ -1,4 +1,4 @@
-﻿;-----------------------------------------
+;-----------------------------------------
 ; Mac keyboard to Windows Key Mappings
 ;=========================================
 
@@ -20,9 +20,9 @@ SendMode Input
 ; media/function keys all mapped to the right option key
 ; --------------------------------------------------------------
 
-RAlt & F7::SendInput {Media_Prev}
-RAlt & F8::SendInput {Media_Play_Pause}
-RAlt & F9::SendInput {Media_Next}
+F7::SendInput {Media_Prev}
+F8::SendInput {Media_Play_Pause}
+F9::SendInput {Media_Next}
 F10::SendInput {Volume_Mute}
 F11::SendInput {Volume_Down}
 F12::SendInput {Volume_Up}
@@ -38,6 +38,8 @@ F15::SendInput {Pause}
 ; cmd + arrows - start & end of lines, with shift for selecting text
 ; -------------------------------
 #Left::SendInput {Home}
++#Up::SendInput ^+{Home}
++#Down::SendInput ^+{End}
 #Right::SendInput {End}
 +#Left::SendInput +{Home}
 +#Right::SendInput +{End}
@@ -46,10 +48,32 @@ F15::SendInput {Pause}
 !+Left::SendInput ^+{Left}
 !+Right::SendInput ^+{Right}
 
+; -------------------------------
+;  Extra text selection
+;
+; cmd + backspace to delete from cursor position until beginning of current line
+; cmd + delete to delete from cursor position until end of current line
+; -------------------------------
+#Backspace::SendInput +{Home}{Backspace}
+#Del::SendInput +{End}{Backspace}
+
 ; --------------------------------------------------------------
 ; OS X system shortcuts
 ; --------------------------------------------------------------
 
+
+
+; Close windows (cmd + q to Alt + F4)
+#q::Send !{F4}
+
+; Minimize windows
+#m::WinMinimize,a
+
+; Screenshot (cmd + shift + 4 to Windows + Shift + S)
++#4::SendInput +#{s}
+
+; Force quit (cmd + option + esc to ctrl + shift + esc)
+!#Esc::SendInput ^+{Esc}
 
 #s::SendInput ^{s}
 #a::SendInput ^{a}
@@ -63,15 +87,28 @@ F15::SendInput {Pause}
 #t::SendInput ^{t}
 #w::SendInput ^{w}
 
-; Close windows (cmd + q to Alt + F4)
-#q::Send !{F4}
 
-; Remap Windows + Tab to Alt + Tab.
-Lwin & Tab::AltTab
 
-; minimize windows
-#m::WinMinimize,a
+; --------------------------------------------------------------
+; Window & desktop management - none of this is working and i dont have the energy to deal with it
+; --------------------------------------------------------------
 
+; Mission Control - Remap F4 (mission control on the magic keyboard) to Win + Tab.
+F4::SendInput #Tab
+
+; Mission Control - Remap Ctrl + Up to Win + Tab.
+;^Up ::SendInput #Tab
+
+; Mission Control - Remap Ctrl + Down to leave Windows Task View.
+;#IfWinActive, ahk_class MultitaskingViewFrame
+;    ^Down::SendInput Esc
+;#IfWinActive
+
+; Spaces - Remap Ctrl + Left to Win + Ctrl + Left
+;^{Left}::SendInput ^#{Left}
+
+; Spaces - Remap Ctrl + Right to Win + Ctrl + Right
+;^{Right}::SendInput ^#{Right}
 
 ; --------------------------------------------------------------
 ; OS X keyboard mappings for special chars
@@ -151,4 +188,6 @@ Lwin & Tab::AltTab
 ; Show source code with cmd + alt + u
 #!u::Send ^u
 
-#IfWinActive
+; On macOS, hitting escape while the force quit panel is open closes the panel. This replicates that behavior with the Task Manager
+#IfWinActive, ahk_exe Taskmgr.exe
+#Esc::SendInput !{F4}
